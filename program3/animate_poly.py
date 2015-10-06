@@ -1,3 +1,10 @@
+"""
+@author - AHLA CHO
+@date -  10/05/2015
+@description - THREE POLYGONES AND THREE POINTS ARE MOVING
+            AND IF POINTS ARE IN THE POLYGONES, THEY ARE CHANGED COLOR
+            AND IF POLYGONES ARE COLLISION, THEY ARE CHANGE THE DIRECTION
+"""
 """Point and Rectangle classes.
 This code is in the public domain.
 Point  -- point with (x,y) coordinates
