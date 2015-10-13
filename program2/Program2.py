@@ -244,7 +244,7 @@ class kdtree:
 
 if __name__ == '__main__':
     time1 = time.time()
-    d=gv.Digraph
+    d=gv.Digraph(format='svg')
     g=Graph()
     tree = kdtree(3)
     tree.insert([3,1,4])
@@ -261,6 +261,6 @@ if __name__ == '__main__':
     tree.Traversal("pre")
     tree.breadthFirst()
     tree.TraversalViz(g)
-    d.render ('kdtree-out.svg', view=True)
+    
 
     print("Program ran in %.2f seconds."%(time.time()-time1))
