@@ -220,6 +220,7 @@ class Rect:
     def __repr__(self):
         return "%s(%r, %r)" % (self.__class__.__name__, Point(self.left, self.top), Point(self.right, self.bottom))
 
+
 class Polygon:
     """A polygon contains a sequence of points on the 2D plane
     and connects them togother.
@@ -319,6 +320,7 @@ class Polygon:
     def __repr__(self):
         return "%s %s" % (self.__class__.__name__,''.join(str(self.points)))
 
+
 class Driver(pantograph.PantographHandler):
     def setup(self):
         """Set up the points, color, directions....
@@ -339,6 +341,8 @@ class Driver(pantograph.PantographHandler):
         self.poly1.set_direction("SE")
         self.poly2.set_direction("NE")
         self.poly3.set_direction("SW")
+
+
 
     def drawShapes(self):
         """Draw points and polygons on the canvas."""
@@ -379,6 +383,8 @@ class Driver(pantograph.PantographHandler):
         if p.y >= self.height or p.y <= 0:
             axis = 'x'
         return axis
+
+
     """
     @function __reflection_direction
     Reflect the moving direction after hit a wall.
@@ -438,16 +444,18 @@ class Driver(pantograph.PantographHandler):
         self.p2.update_position()
         self.p3.update_position()
 
-        prepoy1, prepoly2, prepoly3 = copy.polycopy(self.poly1), copy.polycopy(self.poly2), copy.polycopy(self.poly3)
+        prepoly1, prepoly2, prepoly3 = copy.deepcopy(self.poly1), copy.deepcopy(self.poly2), copy.deepcopy(self.poly3)
 
         for poly in [self.poly1, self.poly2, self.poly3]:
             poly.update_position()
 
         self.pointsInPolygon()
-        self.polygonCollide(prepoly1, prepoly2, prepoly3)
         self.hitWall()
+        self.polygonCollide(prepoly1, prepoly2, prepoly3)
+
         self.drawShapes()
 
 if __name__ == '__main__':
+
     app = pantograph.SimplePantographApplication(Driver)
     app.run()
