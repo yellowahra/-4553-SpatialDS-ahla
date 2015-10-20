@@ -5,16 +5,17 @@
             AND IF POINTS ARE IN THE POLYGONES, THEY ARE CHANGED COLOR
             AND IF POLYGONES ARE COLLISION, THEY ARE CHANGE THE DIRECTION
 """
-"""Point and Rectangle classes.
+import pantograph
+import math
+import sys
+import copy
+
+"""
+Point and Rectangle classes.
 This code is in the public domain.
 Point  -- point with (x,y) coordinates
 Rect  -- two points, forming a rectangle
 """
-import pantograph
-import math
-import sys
-
-
 class Point:
 
     """A point identified by (x,y) coordinates.
@@ -35,7 +36,6 @@ class Point:
     def __init__(self, x=0.0, y=0.0):
         self.x = x
         self.y = y
-        set.direction="S"
 
     def __add__(self, p):
         """Point(x1+x2, y1+y2)"""
@@ -132,36 +132,8 @@ class Point:
         assert direction in ['N','NE','E','SE','S','SW','W','NW']
 
         self.direction = direction
-    def get_direction(self):
-        return self.direction
 
-    def update_position(self, window):
-        if self.x <= 0:
-            if self.direction == "W":
-                self.direction = "E"
-            if self.direction == "NW":
-                self.direction="NE"
-            if self.direction =="SW":
-                self.direction ="SE"
-        if self.y<=0:
-            if self.direction =="N":
-                self.direction="S"
-            if self.direction =="NE":
-                self.direction="SE"
-            if self.direction =="NW":
-                self.direction="SW"
-        if self.x>=window.width:
-            if self.direction=="E":
-                self.direction="W"
-            if self.direction=="SE":
-                self.direction="SW"
-            if self.direction=="NE":
-                self.direction="NW"
-        if self.y>=window.height:
-            if self.direction=="S": #N S
-                self.direction="N"
-            if self.direction=="SE":
-                self.direction="NE"
+    def update_position(self):
         if self.direction == "N":
             self.y -= 1
         if self.direction == "NE":
@@ -182,8 +154,6 @@ class Point:
         if self.direction == "NW":
             self.y -= 1
             self.x -= 1
-
-
 
 class Rect:
 
@@ -251,11 +221,13 @@ class Rect:
         return "%s(%r, %r)" % (self.__class__.__name__, Point(self.left, self.top), Point(self.right, self.bottom))
 
 class Polygon:
+    """A polygon contains a sequence of points on the 2D plane
+    and connects them togother.
+    """
 
     def __init__(self, pts=[]):
         """Initialize a polygon from list of points."""
         self.set_points(pts)
-        self.set_direction("N")     #
 
     def set_points(self, pts):
         """Reset the poly coordinates."""
@@ -266,7 +238,7 @@ class Polygon:
         self.maxY = sys.maxsize * -1
 
         self.points = []
-        #self.mbr = Rect()
+
         for p in pts:
             x,y = p
 
@@ -283,17 +255,22 @@ class Polygon:
 
         self.mbr = Rect(Point(self.minX,self.minY),Point(self.maxX,self.maxY))
 
+    """
+    @function get_points
+    Return a sequence of tuple of the points of the pology.
+
+    """
     def get_points(self):
         generic = []
         for p in self.points:
             generic.append(p.as_tuple())
         return generic
 
-
-
-
-    # determine if a point is inside a given polygon or not
-    # Polygon is a list of (x,y) pairs.
+    """
+    @function
+    determine if a point is inside a given polygon or not
+    Polygon is a list of (x,y) pairs.
+    """
     def point_inside_polygon(self, p):
 
         n = len(self.points)
@@ -313,22 +290,28 @@ class Polygon:
 
         return inside
 
-    def set_direction(self,direction):
-         assert direction in ['N','NE','E','SE','S','SW','W','NW']
-         for p in self.points:
-              p.set_direction(direction)
-         self.direction = direction
+    def is_collision(self, poly):
+        """Check if two pologies collide with each other by examing if their mbrs overlap."""
+        return self.mbr.overlaps(poly.mbr) or poly.mbr.overlaps(self.mbr)
 
-    def get_direction(self):
-       return self.direction
+    def set_direction(self, direction):
+        """Set direction for all points of the pology."""
+        for p in self.points:
+            p.set_direction(direction)
 
     def update_position(self):
-        generic = []
+        """Update positions of all points of the pology, and the mbr."""
+        px, py = self.points[0].x, self.points[0].y
         for p in self.points:
             p.update_position()
-            generic.append(p.as_tuple())
+        dx, dy = self.points[0].x - px, self.points[0].y - py
 
-        self.set_points(generic)
+        # update mbr
+        mbr = self.mbr
+        mbr.left += dx
+        mbr.right += dx
+        mbr.top += dy
+        mbr.bottom += dy
 
     def __str__( self ):
         return "<Polygon \n Points: %s \n Mbr: %s>" % ("".join(str(self.points)),str(self.mbr))
@@ -336,122 +319,134 @@ class Polygon:
     def __repr__(self):
         return "%s %s" % (self.__class__.__name__,''.join(str(self.points)))
 
-
 class Driver(pantograph.PantographHandler):
-
     def setup(self):
-
-        self.poly1 = Polygon([(405, 528),(377, 567),(444, 613),(504, 584),(519, 507),(453, 448),(380, 450),(365, 478),(374, 525)])
-        self.poly1.set_direction("NE")
-        self.poly2 = Polygon([(83, 163),  (90, 74),  (145, 60),  (201, 69),  (265, 46),(333, 61),  (352, 99),  (370, 129),  (474, 138),  (474, 178),  (396, 225),(351, 275),  (376, 312),  (382, 356),  (338, 368),  (287, 302),  (224, 304), (128, 338),  (129, 270), (110, 316),  (83, 231),  (103, 201),  (126, 162),  (165, 151)])
-        self.poly2.set_direction("E")
-        self.poly3 = Polygon([(800,300),(750,450),(900,200),(950,250)])
-        self.poly3.set_direction("N")
-        self.p1 = Point(self.width/2, self.height/2)
-        self.p2 = Point(100, 345)
-        self.p3 = Point(543,743)
+        """Set up the points, color, directions....
+        """
+        self.p1 = Point(300, 100)
+        self.p2 = Point(self.width/2, self.height/2)
+        self.p3 = Point(700, 200)
         self.p1.set_direction("SE")
-        self.p2.set_direction("E")
+        self.p2.set_direction("N")
         self.p3.set_direction("NW")
-        self.polys=[self.poly1, self.poly2, self.poly3]
-        self.pts=[self.p1,self.p2,self.p3]
+        self.p1.color = "#0F0"
+        self.p2.color = "#0F0"
+        self.p3.color = "#0F0"
+
+        self.poly1 = Polygon([(405, 367),(444, 413),(504, 384),(519, 307),(453, 248),(380, 250),(365, 278),(374, 325)])
+        self.poly2 = Polygon([(80,163),(90, 74),(145,60),(210,69)])
+        self.poly3 = Polygon([(236,144),  (317,179), (323,229), (187,299), (150,280)])
+        self.poly1.set_direction("SE")
+        self.poly2.set_direction("NE")
+        self.poly3.set_direction("SW")
+
     def drawShapes(self):
-        self.draw_polygon(self.poly1.get_points() , color = "#F00")
-        self.draw_polygon(self.poly2.get_points() , color = "#0F0")
-        self.draw_polygon(self.poly3.get_points() , color = "#00F")
+        """Draw points and polygons on the canvas."""
+
         self.draw_rect(0, 0, self.width, self.height, color= "#000")
+        self.draw_polygon(self.poly2.get_points(), color = "#000")
+        self.draw_polygon(self.poly1.get_points(), color = "#000")
+        self.draw_polygon(self.poly3.get_points(), color = "#000")
 
-        if  self.poly1.point_inside_polygon(self.p1):
-            color1 = "#0F0"
-        elif self.poly2.point_inside_polygon(self.p1):
-            color1 = "#0F0"
-        elif self.poly3.point_inside_polygon(self.p1):
-            color1 = "#0F0"
-        else:
-            color1 = "#F00"
-        self.fill_oval(self.p1.x, self.p1.y, 7, 7, color1)
+        self.fill_oval(self.p1.x, self.p1.y, 5, 5, self.p1.color)
+        self.fill_oval(self.p2.x, self.p2.y, 5, 5, self.p2.color)
+        self.fill_oval(self.p3.x, self.p3.y, 5, 5, self.p3.color)
 
-        if  self.poly1.point_inside_polygon(self.p2):
-            color2 = "#0F0"
-        elif self.poly2.point_inside_polygon(self.p2):
-            color2 = "#0F0"
-        elif self.poly3.point_inside_polygon(self.p2):
-            color2 = "#0F0"
-        else:
-            color2 = "#F00"
-        self.fill_oval(self.p2.x, self.p2.y, 7, 7, color2)
+    """
+    @function hitWall
+    Check points or polygons hit a wall. then if yes, change their directions.
+    """
+    def hitWall(self):
+        for p in [self.p1, self.p2, self.p3]:
+            axis = self.__point_hit_wall(p)
+            if axis:
+                p.set_direction(self.__reflection_direction(p.direction, axis))
+        for poly in [self.poly1, self.poly2, self.poly3]:
+            for p in poly.points:
+                axis = self.__point_hit_wall(p)
+                if axis:
+                    poly.set_direction(self.__reflection_direction(p.direction, axis))
+                    break
 
-        if  self.poly1.point_inside_polygon(self.p3):
-            color3 = "#0F0"
-        elif self.poly2.point_inside_polygon(self.p3):
-            color3 = "#0F0"
-        elif self.poly3.point_inside_polygon(self.p3):
-            color3 = "#0F0"
-        else:
-            color3 = "#F00"
-        self.fill_oval(self.p3.x, self.p3.y, 7, 7, color3)
+    """
+    @function __point_hit_wall
+    Check if a point hit the wall.
+    """
+    def __point_hit_wall(self, p):
+        axis = None
+        if p.x >= self.width or p.x <= 0:
+            axis = 'y'
+        if p.y >= self.height or p.y <= 0:
+            axis = 'x'
+        return axis
+    """
+    @function __reflection_direction
+    Reflect the moving direction after hit a wall.
+    """
+    def __reflection_direction(self, direction, axis):
+        return {'E':'W', 'W':'E', 'S':'N', 'N':'S', 'NW':'SW' if axis == 'x' else 'NE', 'NE':'SE' if axis == 'x' else 'NW',\
+                'SW':'NW' if axis == 'x' else 'SE', 'SE':'NE' if axis == 'x' else 'SW' }[direction]
 
-    def changeDirection(self, p1, p2):
-        #pass
-        poly1points = p1.get_points()
-        poly2points = p2.get_points()
-        for point in poly1points:
-            if p1.get_direction() == "N" and point[1] < self.height:
-                p1.set_direction("S")
-                return p1.get_direction()
-            if p1.get_direction() == "NE" and point[1] < self.height:
-                p1.set_direction("SE")
-                return p1.get_direction()
-            if p1.get_direction() == "NE" and point[0] > self.width:
-                p1.set_direction("NW")
-                return p1.get_direction()
-            if p1.get_direction() == "E" and point[0] > self.width:
-                p1.set_direction("W")
-                return p1.get_direction()
-            if p1.get_direction() == "SE" and point[1] > self.height:
-                p1.set_direction("NE")
-                return p1.get_direction()
-            if p1.get_direction() == "SE" and point[0] > self.width:
-                p1.set_direction("SW")
-                return p1.get_direction()
-            if p1.get_direction() == "S" and point[1] > self.height:
-                p1.set_direction("N")
-                return p1.get_direction()
-            if p1.get_direction() == "SW" and point[1] > self.height:
-                p1.set_direction("NW")
-                return p1.get_direction()
-            if p1.get_direction() == "SW" and point[0] < self.width:
-                p1.set_direction("SE")
-                return p1.get_direction()
-            if p1.get_direction() == "W" and point[0] < self.width:
-                p1.set_direction("E")
-                return p1.get_direction()
-            if p1.get_direction() == "NW" and point[1] < self.height:
-                p1.set_direction("SW")
-                return p1.get_direction()
-            if p1.get_direction() == "NW" and point[0] < self.width:
-                p1.set_direction("NE")
-                return p1.get_direction()
+    """
+    @function pointsInPolygon
+    Check if some of the three points are in one of the three polygones.
+    If yes, change color of the point.
+    """
+    def pointsInPolygon(self):
+        for p in [self.p1, self.p2, self.p3]:
+            for poly in [self.poly1, self.poly2, self.poly3]:
+                if poly.point_inside_polygon(p):
+                    p.color = "#F00"
+                    break
+                else:
+                    p.color = "#0F0"
+    """
+    @function polygonCollide
+    Check if one of the three polygons collides with another.
+    reverse their directions.
+    """
+    def polygonCollide(self, prepoly1, prepoly2, prepoly3):
 
+        if self.poly1.is_collision(self.poly2) and not prepoly1.is_collision(prepoly2):
+            print('collision 1 2')
+            self.poly1.set_direction(self.__reverse_direction(self.poly1.points[0].direction))
+            self.poly2.set_direction(self.__reverse_direction(self.poly2.points[0].direction))
+        elif self.poly1.is_collision(self.poly3) and not prepoly1.is_collision(prepoly3):
+            print('collision 1 3')
+            self.poly1.set_direction(self.__reverse_direction(self.poly1.points[0].direction))
+            self.poly3.set_direction(self.__reverse_direction(self.poly3.points[0].direction))
+        elif self.poly3.is_collision(self.poly2) and not prepoly3.is_collision(prepoly2):
+            print('collision 3 2')
+            self.poly3.set_direction(self.__reverse_direction(self.poly3.points[0].direction))
+            self.poly2.set_direction(self.__reverse_direction(self.poly2.points[0].direction))
 
-    def hitWall(self, p):
-        pass
-        # if x>=self.width or y>= self.width:
-        #     return True
-        # return False
+    """
+    @function __reverse_direction
+    Reverse the direction after collision.
+    """
+    def __reverse_direction(self, direction):
+        return {'E':'W', 'W':'E', 'S':'N', 'N':'S', 'NW':'SE', 'NE':'SW', 'SE':'NW', 'SW':'NE'}[direction]
 
+    """
+    @function update
+    Update points and polygones after a interval, such as position, direction and color.
+    """
     def update(self):
-        self.clear_rect(0, 0, self.width, self.height)
+        self.clear_rect(0, 0, self.width, self.height) # remove entire previous draw
+
         self.p1.update_position()
         self.p2.update_position()
         self.p3.update_position()
 
-        self.poly1.update_position()
-        self.poly2.update_position()
-        self.poly3.update_position()
-    
-        self.drawShapes()
+        prepoy1, prepoly2, prepoly3 = copy.polycopy(self.poly1), copy.polycopy(self.poly2), copy.polycopy(self.poly3)
 
+        for poly in [self.poly1, self.poly2, self.poly3]:
+            poly.update_position()
+
+        self.pointsInPolygon()
+        self.polygonCollide(prepoly1, prepoly2, prepoly3)
+        self.hitWall()
+        self.drawShapes()
 
 if __name__ == '__main__':
     app = pantograph.SimplePantographApplication(Driver)
