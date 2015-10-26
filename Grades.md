@@ -34,7 +34,8 @@ Good Job!
 |         | Totals:                                          | **100** |   **80**  | ![Alt text][1] |
 ### Comments:
 ```
-I wish you would have visited Dr. Griffin. He could have helped you get the image rendered because the logic is correct already.
+I wish you would have visited Dr. Griffin. He could have helped you get the image rendered because the 
+logic is correct already.
 ```
 
 
