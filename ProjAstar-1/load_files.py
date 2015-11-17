@@ -1,3 +1,11 @@
+"""
+@author - Ahla Cho
+@date -  mm/dd/yyyy
+@description - This program does ..... and write more than one line .....
+
+@resources - I found code and methods at https://docs.python.org/2/library/csv.html,
+                https://docs.python.org/2/tutorial/inputoutput.html.....
+"""
 import csv
 import json
 
@@ -24,10 +32,10 @@ for line in f:
     print line['id']
     geometry[line['id']]= line['geometry']
 
-
-print len(geometry[str(265957)])
-
-#print len(nodes)
-#print len(edges)
+#print nodes
+print len(geometry[str(250691)])
+print 'Your Name'
+print len(nodes)
+print len(edges)
 
 #print geometry
