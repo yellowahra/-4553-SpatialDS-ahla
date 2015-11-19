@@ -1,8 +1,7 @@
 """
 @author - Ahla Cho
-@date -  mm/dd/yyyy
-@description - This program does ..... and write more than one line .....
-
+@date -  11/18/2015
+@program5 -part1
 @resources - I found code and methods at https://docs.python.org/2/library/csv.html,
                 https://docs.python.org/2/tutorial/inputoutput.html.....
 """
@@ -29,13 +28,16 @@ for line in f:
     #geometry.append(json.loads(line))
     #all id
     line=json.loads(line)
-    print line['id']
+    #print line['id']
     geometry[line['id']]= line['geometry']
-
+geo = json.loads(geometry[str(250691)]) #get point from the given line
 #print nodes
-print len(geometry[str(250691)])
-print 'Your Name'
-print len(nodes)
-print len(edges)
+print "Ahla Cho"
+print "Program 5- part 1"
+print "Read 'nodes.csv' " + str(len(nodes))
+print "Read 'edges.csv' " + str(len(edges))
+print "Nodes 250691 contains " + str(len(geo))+ " points."
+print "Geometry follows: "
+print geometry[str(250691)]
 
 #print geometry
