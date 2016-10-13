@@ -8,22 +8,21 @@
 Define the following and give examples of each.
 
 1. Multi-tasking
-*Definition: Multi-tasking is the ability of an operating system to execute more than one task simultaneously on a single processor machine.
-   However, in reality two tasks on a single processor machines cannot be executed at the same time. 
-   Actually CPU switches very quickly from one task to the next task that appears as if all the tasks are executing at the same time. 
-*Examples: Listening to music and searching internet browsing at the same time
+   - Definition: Multi-tasking is the ability of an operating system to execute more than one task simultaneously on a single processor      machine. However, in reality two tasks on a single processor machines cannot be executed at the same time. 
+     Actually CPU switches very quickly from one task to the next task that appears as if all the tasks are executing at the same time. 
+   - Examples: Listening to music and searching internet browsing at the same time
 
 2. Multi-programming
-*Definition: Multi-programming is the ability of an operating system to execute more than one program on a single processor machine. More than one program can reside into the main memeory at one same time.
-*Examples: A computer running excel and chrome browser simultaneously is an example of multiprogramming.
+   - Definition: Multi-programming is the ability of an operating system to execute more than one program on a single processor machine.      More than one program can reside into the main memeory at one same time.
+   - Examples: A computer running excel and chrome browser simultaneously is an example of multiprogramming.
 
 3. Multi-processing
-*Definition: Multi-processing is the abiltiy of an operating system to execute more than one process simultaneously on a multi-processor machine. Computer uses more than one CPU at a time.
-*Examples: When create a file then computer takes Time and date default
+   - Definition: Multi-processing is the abiltiy of an operating system to execute more than one process simultaneously on a multi-          processor machine. Computer uses more than one CPU at a time.
+   - Examples: When create a file then computer takes Time and date default
 
 4. Multi-threaded
-*Definition: Multi-threading is the ability of an operating system to execute the different parts of a program called threads at the same time. A thread is a smallest part of process that can run concurrently with the other threads of the same process.
-*Examples: Basically seen when more number of clients access the server.
+   - Definition: Multi-threading is the ability of an operating system to execute the different parts of a program called threads at the      same time. A thread is a smallest part of process that can run concurrently with the other threads of the same process.
+   - Examples: Basically seen when more number of clients access the server.
 
 
 ####Review Questions From Chapters 3
