@@ -28,50 +28,51 @@ Define the following and give examples of each.
 ####Review Questions From Chapters 3
 
 1. What is an instruction trace?
-..* A sequence of instructions tha execute for a process
+   - A sequence of instructions tha execute for a process
 
 2. What common events lead to the creation of a process?
-..*New batch job
-..*Interactive log-on
-..*Created by OS to provide a service
-..*Spawned by existing proceess
+   - New batch job
+   - Interactive log-on
+   - Created by OS to provide a service
+   - Spawned by existing proceess
 
 3. What does it mean to preempt a process?
-..* To interrupt a process without requiring its cooperation, and with intent to resume it later.
+   - To interrupt a process without requiring its cooperation, and with intent to resume it later.
 
 4. What is swapping and what is its purpose?
-..*Swapping was an older form of memory management. 
-..*Move part or all of a process from main memory to disk.
+   - Swapping was an older form of memory management. 
+   - Move part or all of a process from main memory to disk.
  
 
 5. Why does Figure 3.9b have two blocked states?
-..*There are two independent concepts:
-....-(a)Whther a process is waiting on an event (blocked or not)
-....-(b)Whether a process has been swapped out of main memory(suspended or not)
-....To accommodate this 2X2 combination, we need two Ready states and two Blocked states.
+   - There are two independent concepts:
+     (a)Whther a process is waiting on an event (blocked or not)
+     (b)Whether a process has been swapped out of main memory(suspended or not)
+     To accommodate this 2X2 combination, we need two Ready states and two Blocked states.
 
 6. List four characteristics of a suspended process.
-..*The process is not immediately available for execution.
-..*The process may or may not be waiting for a event.
-..*The process was placed in a suspended state by an agent: either itself, a parent process, or the operating system, for the purpose of preventing its execution.
-..*The process may not be removed from this state until the agent explicitly orders the removal.
+   - The process is not immediately available for execution.
+   - The process may or may not be waiting for a event.
+   - The process was placed in a suspended state by an agent: either itself, a parent process, or the operating system, for the purpose      of preventing its execution.
+   - The process may not be removed from this state until the agent explicitly orders the removal.
 
 7. List three general categories of information in a process control block.
-..*Process identification
-..*Processor state information
-..*Process control information
+   - Process identification
+   - Processor state information
+   - Process control information
 
 8. Why are two modes (user and kernel) needed?
-..*To protect the OS and key operating system tables, such as process control blocks, from interface by user programs.
+   - To protect the OS and key operating system tables, such as process control blocks, from interface by user programs.
 
 9. What is the difference between an interrupt and a trap?
-..*Interrupt is external and independent from current running process.
-..*Trap is error or exception condition generated within the currently running process.
+   - Interrupt is external and independent from current running process.
+   - Trap is error or exception condition generated within the currently running process.
 
 10. Give three examples of an interrupt.
-..*Clock interrupt
-..*I/O interrrup
-..*Memory fault
+    - Clock interrupt
+    - I/O interrrup
+    - Memory fault
 
 11. What is the difference between a mode switch and a process switch?
-..*A mode switch may occur without changing the state of the process that is currently in the Running state. Whereas a process switch involves a state change - much more expensive.
+    - A mode switch may occur without changing the state of the process that is currently in the Running state. 
+      Whereas a process switch involves a state change - much more expensive.
